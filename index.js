@@ -40,6 +40,15 @@ async function run() {
             }
         });
 
+        // GET Method to fetch all visas
+        app.get('/api/visas', async (req, res) => {
+            try {
+                const visas = await visasCollection.find({}).toArray();
+                res.status(200).json(visas);
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
 
         // Send a ping to confirm a successful connection
         await client.db('admin').command({ ping: 1 });
