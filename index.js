@@ -49,6 +49,16 @@ async function run() {
             }
         });
 
+        // GET Method to fetch latest 6 visas
+        app.get('/api/latestVisas', async (req, res) => {
+            try {
+                const latestVisas = await visasCollection.find({}).sort({ _id: -1 }).limit(6).toArray();
+                res.status(200).json(latestVisas);
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+
         // GET Method to fetch a single visa by ID
         app.get('/api/visas/:id', async (req, res) => {
             try {
