@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb'); // ObjectID -> ObjectId
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.hhc73.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 console.log(uri);
 
@@ -24,7 +24,6 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        // Connect the client to the server (optional starting in v4.7)
         await client.connect();
         const db = client.db('visaNavigator');
         const visasCollection = db.collection('visas');
@@ -45,6 +44,21 @@ async function run() {
             try {
                 const visas = await visasCollection.find({}).toArray();
                 res.status(200).json(visas);
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+
+        // GET Method to fetch a single visa by ID
+        app.get('/api/visas/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                console.log('Fetching Visa with ID:', id);
+                const visa = await visasCollection.findOne({ _id: new ObjectId(id) });
+                if (!visa) {
+                    return res.status(404).json({ message: 'Visa not found' });
+                }
+                res.status(200).json(visa);
             } catch (err) {
                 res.status(500).json({ message: err.message });
             }
