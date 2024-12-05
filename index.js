@@ -51,6 +51,17 @@ async function run() {
             }
         });
 
+        // Add this GET method to fetch applications by email
+        app.get('/api/applications', async (req, res) => {
+            try {
+                const email = req.query.email;
+                const applications = await applicationsCollection.find({ email }).toArray();
+                res.status(200).json(applications);
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+
         // GET Method to fetch all visas
         app.get('/api/visas', async (req, res) => {
             try {
