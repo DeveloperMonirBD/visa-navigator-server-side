@@ -27,6 +27,7 @@ async function run() {
         await client.connect();
         const db = client.db('visaNavigator');
         const visasCollection = db.collection('visas');
+        const applicationsCollection = db.collection('applications');
 
         // Add Visa
         app.post('/api/visas/add', async (req, res) => {
@@ -34,6 +35,17 @@ async function run() {
                 const newVisa = req.body;
                 await visasCollection.insertOne(newVisa);
                 res.status(201).json(newVisa);
+            } catch (err) {
+                res.status(400).json({ message: err.message });
+            }
+        });
+
+        // POST Method to store application data
+        app.post('/api/applications/add', async (req, res) => {
+            try {
+                const newApplication = req.body;
+                await applicationsCollection.insertOne(newApplication);
+                res.status(201).json(newApplication);
             } catch (err) {
                 res.status(400).json({ message: err.message });
             }
