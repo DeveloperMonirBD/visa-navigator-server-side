@@ -62,6 +62,21 @@ async function run() {
             }
         });
 
+        // DELETE Method to remove application by ID
+        app.delete('/api/applications/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const result = await applicationsCollection.deleteOne({ _id: new ObjectId(id) });
+                if (result.deletedCount === 1) {
+                    res.status(200).json({ message: 'Application cancelled successfully.' });
+                } else {
+                    res.status(404).json({ message: 'Application not found.' });
+                }
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+
         // GET Method to fetch all visas
         app.get('/api/visas', async (req, res) => {
             try {
