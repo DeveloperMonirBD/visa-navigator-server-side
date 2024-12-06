@@ -93,6 +93,49 @@ async function run() {
             }
         });
 
+
+        // Put Method to Update application by ID
+        app.get('/visas/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const visa = await visasCollection.findOne(query);
+            res.send(visa);
+        })
+
+        app.put('/visas/:id', async (req, res) => {
+            const id = req.params.id;
+            const visa = req.body;
+            console.log(id, visa)
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true }
+            const updatedvisa = {
+                $set: {
+                    countryImage: visa.countryImage,
+                    countryName: visa.countryName,
+                    visaType: visa.visaType,
+                    processingTime: visa.processingTime,
+                    requiredDocuments: [visa.requiredDocuments],
+                    description: visa.description,
+                    ageRestriction: visa.ageRestriction,
+                    fee: visa.fee,
+                    validity: visa.validity,
+                    applicationMethod: visa.applicationMethod
+                }
+            };
+
+            const result = await visasCollection.updateOne(filter, updatedvisa, options);
+            res.send(result)
+
+        });
+
+
+
+
+
+
+
+
+
         // DELETE Method to remove visa by ID
         app.delete('/api/visas/:id', async (req, res) => {
             try {
