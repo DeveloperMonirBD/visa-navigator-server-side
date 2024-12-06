@@ -29,7 +29,8 @@ async function run() {
         const visasCollection = db.collection('visas');
         const applicationsCollection = db.collection('applications');
 
-        // Add Visa
+        // All Visas Method:
+        // POST Method to store Visas data
         app.post('/api/visas/add', async (req, res) => {
             try {
                 const newVisa = req.body;
@@ -37,43 +38,6 @@ async function run() {
                 res.status(201).json(newVisa);
             } catch (err) {
                 res.status(400).json({ message: err.message });
-            }
-        });
-
-        // POST Method to store application data
-        app.post('/api/applications/add', async (req, res) => {
-            try {
-                const newApplication = req.body;
-                await applicationsCollection.insertOne(newApplication);
-                res.status(201).json(newApplication);
-            } catch (err) {
-                res.status(400).json({ message: err.message });
-            }
-        });
-
-        // Add this GET method to fetch applications by email
-        app.get('/api/applications', async (req, res) => {
-            try {
-                const email = req.query.email;
-                const applications = await applicationsCollection.find({ email }).toArray();
-                res.status(200).json(applications);
-            } catch (err) {
-                res.status(500).json({ message: err.message });
-            }
-        });
-
-        // DELETE Method to remove application by ID
-        app.delete('/api/applications/:id', async (req, res) => {
-            try {
-                const id = req.params.id;
-                const result = await applicationsCollection.deleteOne({ _id: new ObjectId(id) });
-                if (result.deletedCount === 1) {
-                    res.status(200).json({ message: 'Application cancelled successfully.' });
-                } else {
-                    res.status(404).json({ message: 'Application not found.' });
-                }
-            } catch (err) {
-                res.status(500).json({ message: err.message });
             }
         });
 
@@ -107,6 +71,76 @@ async function run() {
                     return res.status(404).json({ message: 'Visa not found' });
                 }
                 res.status(200).json(visa);
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+
+        // GET Method to fetch visas by user email
+        app.get('/myAddedVisas', async (req, res) => {
+            try {
+                const email = req.headers.authorization?.split(' ')[1];
+                if (!email) {
+                    return res.status(400).send({ message: 'Email not provided' });
+                }
+                const result = await visasCollection.find({ email }).toArray();
+                if (!result || result.length === 0) {
+                    return res.status(404).send({ message: 'No visa data found' });
+                }
+                res.send(result);
+            } catch (error) {
+                res.status(500).send({ message: 'Server error', error });
+            }
+        });
+
+        // DELETE Method to remove visa by ID
+        app.delete('/api/visas/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const result = await visasCollection.deleteOne({ _id: new ObjectId(id) });
+                if (result.deletedCount === 1) {
+                    res.status(200).json({ message: 'Visa deleted successfully.' });
+                } else {
+                    res.status(404).json({ message: 'Visa not found.' });
+                }
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+
+        // All Applications Method:
+        // POST Method to store application data
+        app.post('/api/applications/add', async (req, res) => {
+            try {
+                const newApplication = req.body;
+                await applicationsCollection.insertOne(newApplication);
+                res.status(201).json(newApplication);
+            } catch (err) {
+                res.status(400).json({ message: err.message });
+            }
+        });
+
+        // Add this GET method to fetch applications by email
+        app.get('/api/applications', async (req, res) => {
+            try {
+                const email = req.query.email;
+                const applications = await applicationsCollection.find({ email }).toArray();
+                res.status(200).json(applications);
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+
+        // DELETE Method to remove application by ID
+        app.delete('/api/applications/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const result = await applicationsCollection.deleteOne({ _id: new ObjectId(id) });
+                if (result.deletedCount === 1) {
+                    res.status(200).json({ message: 'Application cancelled successfully.' });
+                } else {
+                    res.status(404).json({ message: 'Application not found.' });
+                }
             } catch (err) {
                 res.status(500).json({ message: err.message });
             }
