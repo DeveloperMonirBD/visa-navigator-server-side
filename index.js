@@ -93,21 +93,20 @@ async function run() {
             }
         });
 
-
         // Put Method to Update application by ID
         app.get('/visas/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
+            const query = { _id: new ObjectId(id) };
             const visa = await visasCollection.findOne(query);
             res.send(visa);
-        })
-
+        });
+        // Put Method to Update application by ID
         app.put('/visas/:id', async (req, res) => {
             const id = req.params.id;
             const visa = req.body;
-            console.log(id, visa)
+            console.log(id, visa);
             const filter = { _id: new ObjectId(id) };
-            const options = { upsert: true }
+            const options = { upsert: true };
             const updatedvisa = {
                 $set: {
                     countryImage: visa.countryImage,
@@ -124,17 +123,8 @@ async function run() {
             };
 
             const result = await visasCollection.updateOne(filter, updatedvisa, options);
-            res.send(result)
-
+            res.send(result);
         });
-
-
-
-
-
-
-
-
 
         // DELETE Method to remove visa by ID
         app.delete('/api/visas/:id', async (req, res) => {
