@@ -24,7 +24,8 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        await client.connect();
+        // await client.connect();
+
         const db = client.db('visaNavigator');
         const visasCollection = db.collection('visas');
         const applicationsCollection = db.collection('applications');
@@ -85,7 +86,7 @@ async function run() {
                 }
                 const result = await visasCollection.find({ email }).toArray();
                 if (!result || result.length === 0) {
-                    return res.status(404).send({ message: 'No visa data found' });
+                    return res.status(404).send({ message: "Your Visa data is 'Empty'" });
                 }
                 res.send(result);
             } catch (error) {
@@ -179,9 +180,10 @@ async function run() {
             }
         });
 
-        // Send a ping to confirm a successful connection
-        await client.db('admin').command({ ping: 1 });
-        console.log('Pinged your deployment. You successfully connected to MongoDB!');
+        // ** Send a ping to confirm a successful connection
+
+        // await client.db('admin').command({ ping: 1 });
+        // console.log('Pinged your deployment. You successfully connected to MongoDB!');
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
