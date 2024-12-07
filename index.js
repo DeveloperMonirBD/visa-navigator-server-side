@@ -114,7 +114,7 @@ async function run() {
                     countryName: visa.countryName,
                     visaType: visa.visaType,
                     processingTime: visa.processingTime,
-                    requiredDocuments: [visa.requiredDocuments],
+                    requiredDocuments: visa.requiredDocuments,
                     description: visa.description,
                     ageRestriction: visa.ageRestriction,
                     fee: visa.fee,
