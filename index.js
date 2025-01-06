@@ -55,7 +55,7 @@ async function run() {
         // GET Method to fetch latest 6 visas
         app.get('/api/latestVisas', async (req, res) => {
             try {
-                const latestVisas = await visasCollection.find({}).sort({ _id: -1 }).limit(6).toArray();
+                const latestVisas = await visasCollection.find({}).sort({ _id: -1 }).limit(8).toArray();
                 res.status(200).json(latestVisas);
             } catch (err) {
                 res.status(500).json({ message: err.message });
